@@ -1,1 +1,1 @@
-print("hey man");
+print("Hello, World!");

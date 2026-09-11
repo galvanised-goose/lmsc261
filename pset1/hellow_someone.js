@@ -1,1 +1,3 @@
-print("hey dude");
+let nameToPrint = "galvanising Gustav";
+let greeting = "Hello, " + nameToPrint;
+print (greeting);
