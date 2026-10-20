@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<body>
+    <canvas width="600" height="600" id="canvas" style="width: 600px; height: 600px;"></canvas>
+</body>
+
+<script>
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    const w = canvas.width, h = canvas.height;
+
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width *= dpr, canvas.height *= dpr;
+    ctx.scale(dpr, dpr);
+
+    alert("Commencing Seizure");
+
+    //draw background
+    const centerX = w / 2; // cx is not defined yet so I used CenterX
+    const centerY = h / 2; // cy is not defined yet so I used CenterY
+    const canvasRadius = Math.sqrt(Math.pow(centerX, 2) + Math.pow(centerY, 2)); // calculates the distance from the center to a corner
+    const radialGradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, canvasRadius); // radial gradient
+    radialGradient.addColorStop(0, "lightblue"); // center colour
+    radialGradient.addColorStop(0.5, "blue"); // middle colour
+    radialGradient.addColorStop(1, "black"); // outer colour
+    ctx.fillStyle = radialGradient;
+    ctx.fillRect(0, 0, w, h);
+
+    function draw(cx, cy, scale){
+    
+    // coordinate variables
+    const radiusA = w * 0.125 * scale, radiusB = radiusA / 2, radiusC = radiusB * 0.25
+
+    //draw circle layer 1
+    ctx.beginPath();
+    ctx.arc(cx,
+            cy,
+            radiusA + 2,
+            0,
+            Math.PI * 2,
+            false);
+        ctx.fillStyle = "black"; //background circle
+        ctx.fill();
+
+    //draw circle layer 2
+    ctx.beginPath();
+    ctx.arc(cx,
+            cy,
+            radiusA,
+            0,
+            Math.PI * 2,
+            false);
+        ctx.fillStyle = "black"; // yin body
+        ctx.fill();
+
+    // draw yang
+    ctx.beginPath();
+    ctx.arc(cx,         // yang head
+            cy - radiusA * 0.5,
+            radiusB,
+            Math.PI * 1.5,
+            Math.PI * 0.5,
+            false);
+    ctx.arc(cx,         // yang tail
+            cy + radiusA * 0.5,
+            radiusB,
+            Math.PI * 1.5,
+            Math.PI * 0.5,
+            true);
+    ctx.arc(cx,         // yang body
+            cy,
+            radiusA,
+            Math.PI * 0.5,
+            Math.PI * 1.5,
+            false);
+        ctx.fillStyle = "white"; // colour yang
+        ctx.fill();
+
+    // draw eyes
+    ctx.beginPath();
+    ctx.arc(cx,                 // yang eye
+            cy - radiusA * 0.5,
+            radiusC,
+            0,
+            Math.PI * 2,
+            false);
+        ctx.fillStyle = "black"; // eye colour yang
+        ctx.fill();
+    ctx.beginPath();
+    ctx.arc(cx,                 // yin eye
+            cy + radiusA * 0.5,
+            radiusC,
+            0,
+            Math.PI * 2,
+            false);
+        ctx.fillStyle = "white" // eye colour yin
+        ctx.fill();
+    };
+    
+    function tickRotate(){
+        //let degrees = 45;
+        //let radians = degrees * Math.PI / 180;
+
+        for(let i = 0; i < 360; i++){
+        let radians = i * Math.PI
+        ctx.rotate(radians)};
+        
+        draw(150, 150, Math.random());
+        draw(450, 450, Math.random());
+        draw(150, 450, Math.random());
+        draw(450, 150, Math.random());
+
+        requestAnimationFrame(tickRotate);
+    };
+
+    tickRotate(); // I tried to make the symbols rotate every time a new radius size was drawn but I wasn't able to figure it out :(
+
+
+    // ignore everything below this, I will look into that for my final
+    /*   
+    let angle = 0;
+    let mouseX = 0;
+    let mouseY = 0;
+    document.addEventListener("mousemove", (e) => {
+        mouseX = e.offsetX;
+        mouseY = e.offsetY;
+    })
+    
+    function tick(){
+        
+        for(let i = 0; i < 6; i++){
+
+            angle += 0.001;
+            let otherVal = mouseX / w;
+            let x = w / 2
+            let y = h / 2 + Math.sin(otherVal * Math.PI * 2 + angle) * i * 30;
+
+            console.log(y)
+            draw(x, y);
+        }
+
+        requestAnimationFrame(tick)
+    }
+   // tick();
+*/
+</script>
