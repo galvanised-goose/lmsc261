@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<body>
+    <canvas width="600" height="600" id="canvas" style="width: 600px; height: 600px;"></canvas>
+</body>
+
+<script>
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    const w = canvas.width, h = canvas.height;
+
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width *= dpr, canvas.height *= dpr;
+    ctx.scale(dpr, dpr);
+
+    alert("Commencing Seizure");
+
+    function drawBackground(){
+        //draw background
+        const centerX = w / 2; // cx is not defined yet so I used CenterX
+        const centerY = h / 2; // cy is not defined yet so I used CenterY
+        const canvasRadius = Math.sqrt(Math.pow(centerX, 2) + Math.pow(centerY, 2)); // calculates the distance from the center to a corner
+        const radialGradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, canvasRadius); // radial gradient
+        radialGradient.addColorStop(0, "aquamarine"); // center colour
+        radialGradient.addColorStop(0.5, "royalblue"); // middle colour
+        radialGradient.addColorStop(1, "navy"); // outer colour
+        ctx.fillStyle = radialGradient;
+        ctx.fillRect(0, 0, w, h);
+    };
+
+    function drawCircle(cx, cy, scale, angle){
+    
+    // coordinate variables
+    const radiusA = w * 0.125 * scale, radiusB = radiusA / 2, radiusC = radiusB * 0.25
+
+    //draw circle layer 1
+    ctx.beginPath();
+    ctx.arc(cx,
+            cy,
+            radiusA + 2,
+            0,
+            Math.PI * 2,
+            false);
+        ctx.fillStyle = "black"; //background circle
+        ctx.fill();
+
+    //draw circle layer 2
+    ctx.beginPath();
+    ctx.arc(cx,
+            cy,
+            radiusA,
+            angle,
+            angle + Math.PI * 2,
+            false);
+        ctx.fillStyle = "purple";   // yin body
+        ctx.fill();
+
+    // draw yang
+    ctx.beginPath();
+    ctx.arc(cx + (Math.sin(angle) * radiusA * 0.5),                     // yang head
+            cy + (Math.cos(angle) * -radiusB),
+            radiusB,
+            Math.PI * 1.5,
+            Math.PI * 0.5,
+            false);
+     ctx.arc(cx + Math.cos(angle) * radiusA * 0.5,                     // yang tail
+            cy + Math.sin(angle) * radiusA * 0.5,
+            radiusB,
+            Math.PI * 1.5,
+            Math.PI * 0.5,
+            true);
+    ctx.arc(cx + Math.cos(angle),                     // yang body
+            cy + Math.sin(angle),
+            radiusA,
+            Math.PI * 0.5,
+            Math.PI * 1.5,
+            false); 
+        ctx.fillStyle = "white"; // colour yang
+        ctx.fill();
+
+    // draw eyes
+    ctx.beginPath();
+    ctx.arc(cx + (Math.sin(angle) * radiusA * 0.5),       // yang eye
+            cy + (Math.cos(angle) * -radiusB),
+            radiusC,
+            0,
+            Math.PI * 2,
+            false);
+        ctx.fillStyle = "black"; // eye colour yang
+        ctx.fill();
+    ctx.beginPath();
+    ctx.arc(cx + (Math.sin(angle) * radiusA * 0.5),                 // yin eye
+            cy + (Math.cos(angle) * -radiusB * 2),
+            radiusC,
+            0,
+            Math.PI * 2,
+            false);
+        ctx.fillStyle = "pink" // eye colour yin
+        ctx.fill();
+    };
+    
+    let angle = 0;
+    function tickRotate(){
+        angle += 0.05;
+       // if (angle > Math.PI * 2) angle = 0;
+        
+        drawBackground();
+        drawCircle(150, 150, 1, angle);
+        drawCircle(450, 450, 1, angle);
+        drawCircle(150, 450, 1, angle);
+        drawCircle(450, 150, 1, angle);
+
+        requestAnimationFrame(tickRotate);
+    };
+
+    tickRotate();
+  
+    let move = 0;
+    let mouseX = 0;
+    let mouseY = 0;
+    document.addEventListener("mousemove", (e) => {
+        mouseX = e.offsetX;
+        mouseY = e.offsetY;
+    })
+    
+    function tick(){
+        
+        for(let i = 0; i < 6; i++){
+
+            move += 0.001;
+            let otherVal = mouseX / w;
+            let x = w / 2
+            let y = h / 2 + Math.sin(otherVal * Math.PI * 2 + angle) * i * 30;
+
+            console.log(y)
+            drawCircle(x, y, 1, angle);
+        }
+
+        requestAnimationFrame(tick)
+    }
+    tick();
+</script>
